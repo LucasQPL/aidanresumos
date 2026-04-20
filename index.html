@@ -343,7 +343,7 @@ async function fetchCover(title, artist, idx) {
   if (coverCache[idx] !== undefined) return coverCache[idx];
   coverCache[idx] = null;
   try {
-    const q = encodeURIComponent(`release:"${title}" AND artist:"${artist}"`);
+    const q = encodeURIComponent(`${title} ${artist}`);
     const r = await fetch(`https://musicbrainz.org/ws/2/release/?query=${q}&limit=5&fmt=json`, {
       headers: { 'User-Agent': 'BacklogMusical/1.0 (personal-project)' }
     });
