@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backlog Musical</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;min-height:100vh;overflow-x:hidden;background:#03020d;font-family:'Segoe UI',sans-serif;color:#e0d8f8}
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:2;min-height:100vh}
+header{text-align:center;padding:2.5rem 1rem 1rem}
+header h1{font-size:2rem;font-weight:300;letter-spacing:.2em;color:#c4aff8;text-shadow:0 0 60px rgba(160,100,255,.35)}
+header p{font-size:.82rem;color:#5858a0;letter-spacing:.08em;margin-top:.4rem}
+nav{display:flex;justify-content:center;gap:.5rem;padding:.75rem 1rem 1.5rem}
+nav button{background:transparent;border:1px solid rgba(160,100,255,.25);color:#9080c8;padding:.4rem 1.6rem;border-radius:999px;cursor:pointer;font-size:.85rem;letter-spacing:.06em;transition:all .2s}
+nav button.active,nav button:hover{background:rgba(120,70,220,.18);border-color:rgba(180,130,255,.6);color:#d0b8ff}
+.page{display:none}.page.active{display:block}
+.cs-outer{position:relative;overflow:hidden;height:520px;display:flex;align-items:center}
+.cs-track{display:flex;align-items:center;position:absolute;left:50%;gap:0;transition:margin-left .55s cubic-bezier(.4,0,.2,1)}
+.cs-card{position:relative;width:260px;height:380px;flex-shrink:0;cursor:pointer;transition:all .45s cubic-bezier(.4,0,.2,1);transform-origin:center center;transform-style:preserve-3d;margin:0 12px}
+.cs-card .face{width:100%;height:100%;border-radius:10px;overflow:hidden;position:relative;border:1px solid rgba(160,100,255,.15);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.cs-card img{width:100%;height:72%;object-fit:cover;display:block;background:#120d28;transition:opacity .4s}
+.cs-card .cover-placeholder{width:100%;height:72%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#12082a,#1e1040);font-size:.75rem;color:#6050a0;text-align:center;padding:.5rem}
+.cs-card .info{padding:.7rem .8rem .6rem;background:rgba(14,10,30,.92);height:28%;display:flex;flex-direction:column;justify-content:center}
+.cs-card .info h2{font-size:.82rem;font-weight:500;color:#ddd0f8;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cs-card .info .artist{font-size:.7rem;color:#7060a8;margin-top:.25rem}
+.cs-card .info .gtag{display:inline-block;margin-top:.3rem;font-size:.62rem;padding:.15rem .45rem;border-radius:999px;background:rgba(110,60,200,.2);color:#a080e0;border:1px solid rgba(110,60,200,.3)}
+.cs-card[data-pos="0"]{transform:scale(1) rotateY(0deg);z-index:10;opacity:1;filter:none}
+.cs-card[data-pos="1"]{transform:scale(.82) rotateY(-22deg) translateX(20px);z-index:7;opacity:.75;filter:saturate(.5) brightness(.7)}
+.cs-card[data-pos="-1"]{transform:scale(.82) rotateY(22deg) translateX(-20px);z-index:7;opacity:.75;filter:saturate(.5) brightness(.7)}
+.cs-card[data-pos="2"]{transform:scale(.68) rotateY(-35deg) translateX(30px);z-index:4;opacity:.45;filter:saturate(.25) brightness(.5)}
+.cs-card[data-pos="-2"]{transform:scale(.68) rotateY(35deg) translateX(-30px);z-index:4;opacity:.45;filter:saturate(.25) brightness(.5)}
+.cs-card[data-pos="3"]{transform:scale(.55) rotateY(-42deg);z-index:2;opacity:.2;filter:saturate(.1) brightness(.35)}
+.cs-card[data-pos="-3"]{transform:scale(.55) rotateY(42deg);z-index:2;opacity:.2;filter:saturate(.1) brightness(.35)}
+.cs-card[data-far]{opacity:.05;pointer-events:none;filter:saturate(0) brightness(.15)}
+.cs-card .spinner{position:absolute;top:36%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border:2px solid rgba(160,100,255,.2);border-top-color:#b080f8;border-radius:50%;animation:spin .8s linear infinite;display:none}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.cs-card.loading .spinner{display:block}
+.cs-card.loading img{opacity:0!important}
+.cs-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:72px;background:rgba(10,5,25,.45);border:1px solid rgba(160,100,255,.12);border-radius:6px;color:rgba(180,140,255,.4);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:20;backdrop-filter:blur(6px)}
+.cs-arrow:hover{background:rgba(100,60,200,.22);color:rgba(210,180,255,.85);border-color:rgba(180,130,255,.35)}
+#arrLeft{left:6px}
+#arrRight{right:6px}
+.review-wrap{max-width:700px;margin:0 auto;padding:.5rem 1.5rem 2.5rem}
+.review-box{background:rgba(16,10,35,.7);border:1px solid rgba(150,100,255,.18);border-radius:14px;padding:1.25rem 1.5rem;backdrop-filter:blur(12px);transition:opacity .3s}
+.review-box .rlabel{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#7060a8;margin-bottom:.5rem}
+.stars{display:flex;gap:3px;margin-bottom:.6rem}
+.star{width:12px;height:12px;background:#a070e8;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.star.e{background:rgba(160,100,255,.18)}
+.review-box p{font-size:.9rem;line-height:1.7;color:#b8b0d0;font-style:italic}
+.review-box .ph{font-size:.88rem;color:#504888;font-style:italic}
+.dots{display:flex;justify-content:center;gap:5px;padding:.75rem 1rem .2rem;flex-wrap:wrap;max-width:600px;margin:0 auto}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(160,100,255,.22);cursor:pointer;transition:all .2s}
+.dot.active{background:#a070e8;transform:scale(1.45)}
+.ctr{text-align:center;font-size:.72rem;color:#40387a;padding:.2rem;letter-spacing:.06em}
+.tracks-wrap{max-width:820px;margin:0 auto;padding:1rem 1.5rem 3rem;display:flex;flex-direction:column;gap:.85rem}
+.tr-card{background:rgba(14,10,32,.65);border:1px solid rgba(150,100,255,.16);border-radius:12px;padding:1rem 1.25rem;backdrop-filter:blur(8px);display:grid;grid-template-columns:48px 1fr;gap:.85rem;align-items:start;transition:border-color .2s}
+.tr-card:hover{border-color:rgba(160,110,255,.38)}
+.tr-num{width:48px;height:48px;border-radius:8px;background:rgba(110,60,200,.15);border:1px solid rgba(110,60,200,.28);display:flex;align-items:center;justify-content:center;font-size:1.05rem;color:#a070e0;font-weight:300;flex-shrink:0}
+.tr-body h3{font-size:.95rem;font-weight:500;color:#ddd0f8}
+.tr-body .ta{font-size:.78rem;color:#6860a0;margin-top:.1rem}
+.tr-body .rev{font-size:.83rem;line-height:1.65;color:#b0a8cc;margin-top:.5rem;font-style:italic}
+.tr-body .gtag{display:inline-block;margin-top:.4rem;font-size:.65rem;padding:.12rem .45rem;border-radius:999px;background:rgba(100,50,190,.18);color:#9070d8;border:1px solid rgba(100,50,190,.28)}
+.ptitle{text-align:center;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(130,120,180,.4);padding:.25rem 1rem 1.5rem}
+#np{position:fixed;bottom:1.2rem;right:1.2rem;z-index:100;background:rgba(14,10,35,.85);border:1px solid rgba(150,100,255,.25);border-radius:10px;padding:.5rem .9rem;font-size:.72rem;color:#8070b8;backdrop-filter:blur(12px);display:flex;align-items:center;gap:.5rem;max-width:220px}
+#np .nd{width:7px;height:7px;border-radius:50%;background:#a070e0;animation:pls 1.6s ease-in-out infinite;flex-shrink:0}
+@keyframes pls{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
+#nptxt{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="wrap">
+
+<header>
+  <h1>✦ backlog musical</h1>
+  <p>tudo que você me mandou — ouvi, anotei, sou honesto</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('albums')">álbuns</button>
+  <button onclick="showPage('tracks')">músicas avulsas</button>
+</nav>
+
+<div id="page-albums" class="page active">
+  <p class="ptitle">navegue com as setas, teclado ← → ou toque</p>
+  <div class="cs-outer" id="csOuter">
+    <button class="cs-arrow" id="arrLeft" onclick="move(-1)">&#8249;</button>
+    <div class="cs-track" id="csTrack"></div>
+    <button class="cs-arrow" id="arrRight" onclick="move(1)">&#8250;</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <p class="ctr" id="ctr"></p>
+  <div class="review-wrap">
+    <div class="review-box" id="rvBox">
+      <div class="rlabel">resenha crítica</div>
+      <div class="stars" id="rvStars"></div>
+      <p id="rvTxt"></p>
+    </div>
+  </div>
+</div>
+
+<div id="page-tracks" class="page">
+  <p class="ptitle">músicas avulsas — indicações do meu amigo</p>
+  <div class="tracks-wrap" id="tracksWrap"></div>
+</div>
+
+</div>
+<div id="np"><div class="nd"></div><span id="nptxt">—</span></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// DADOS — edite aqui as resenhas, estrelas (0-5) e músicas avulsas
+// ═══════════════════════════════════════════════════════════════════════
+const ALBUMS = [
+  {
+    title: "A Máquina Que Sonha Colorido",
+    artist: "Sugar Kane",
+    year: 2009,
+    genre: "Rock Alternativo",
+    stars: 0,         // ← coloque de 0 a 5
+    review: ""        // ← escreva sua resenha aqui
+  },
+  {
+    title: "Amyl and The Sniffers",
+    artist: "Amyl and The Sniffers",
+    year: 2019,
+    genre: "Punk Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Déjà vu",
+    artist: "Crosby, Stills, Nash & Young",
+    year: 1970,
+    genre: "Folk Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Electra Heart",
+    artist: "Marina and the Diamonds",
+    year: 2012,
+    genre: "Synth-pop",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Epicus Doomicus Metallicus",
+    artist: "Candlemass",
+    year: 1986,
+    genre: "Doom Metal",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Eternity",
+    artist: "Blaze Bayley",
+    year: 1996,
+    genre: "Heavy Metal",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Excerpts From a Future Past",
+    artist: "Matmos",
+    year: 2004,
+    genre: "Electronic",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Ginete",
+    artist: "Raimundos",
+    year: 1994,
+    genre: "Punk Rock Brasileiro",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "In-A-Gadda-Da-Vida",
+    artist: "Iron Butterfly",
+    year: 1968,
+    genre: "Psychedelic Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Joelho De Porco",
+    artist: "Joelho De Porco",
+    year: 1972,
+    genre: "Rock Progressivo",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Live Bullet",
+    artist: "Bob Seger",
+    year: 1976,
+    genre: "Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "New Hope For The Wretched",
+    artist: "The Plasmatics",
+    year: 1980,
+    genre: "Punk / Metal",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Neysluvara",
+    artist: "Heilung",
+    year: 2019,
+    genre: "Nordic Folk",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Por Este Rio Acima",
+    artist: "Sérgio Godinho",
+    year: 1975,
+    genre: "Folk Português",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Runaljod – Yggdrasil",
+    artist: "Wardruna",
+    year: 2013,
+    genre: "Nordic Folk",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Shakin' All Over",
+    artist: "Johnny Kidd & The Pirates",
+    year: 1960,
+    genre: "Rock & Roll",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "The Joker",
+    artist: "Steve Miller Band",
+    year: 1973,
+    genre: "Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Welcome to My Nightmare",
+    artist: "Alice Cooper",
+    year: 1975,
+    genre: "Shock Rock",
+    stars: 0,
+    review: ""
+  },
+  {
+    title: "Psalm 69",
+    artist: "Ministry",
+    year: 1992,
+    genre: "Industrial Metal",
+    stars: 0,
+    review: ""
+  },
+];
+
+const TRACKS = [
+  // Substitua com as músicas avulsas que seu amigo mandou
+  { num: "01", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+  { num: "02", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+  { num: "03", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+  { num: "04", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+  { num: "05", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+  { num: "06", title: "[nome da música]", artist: "[artista]", genre: "—", review: "" },
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+// FUNDO — galáxia com parallax no mouse
+// ═══════════════════════════════════════════════════════════════════════
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let W, H, stars = [], nebulae = [];
+let mx = .5, my = .5, tx = .5, ty = .5;
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function initStars() {
+  stars = []; nebulae = [];
+  for (let i = 0; i < 380; i++) stars.push({
+    x: Math.random() * W, y: Math.random() * H,
+    r: Math.random() * 1.5 + .2,
+    op: Math.random() * .75 + .2,
+    spd: Math.random() * .4 + .05,
+    ph: Math.random() * Math.PI * 2,
+    px: Math.random() * .6 + .2
+  });
+  const hues = [255, 240, 280, 210, 265, 300, 220];
+  for (let i = 0; i < 7; i++) nebulae.push({
+    x: Math.random() * W, y: Math.random() * H,
+    r: 140 + Math.random() * 260,
+    hue: hues[i % hues.length],
+    op: .03 + Math.random() * .045,
+    px: Math.random() * .8 + .1,
+    py: Math.random() * .8 + .1
+  });
+}
+
+let t = 0;
+function drawBg() {
+  t += .008;
+  tx += (mx - tx) * .04; ty += (my - ty) * .04;
+  const dx = (tx - .5) * 90, dy = (ty - .5) * 55;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#03020d'; ctx.fillRect(0, 0, W, H);
+  nebulae.forEach(n => {
+    const ox = dx * n.px, oy = dy * n.py;
+    const g = ctx.createRadialGradient(n.x + ox, n.y + oy, 0, n.x + ox, n.y + oy, n.r);
+    g.addColorStop(0, `hsla(${n.hue},65%,50%,${n.op * 1.6})`);
+    g.addColorStop(1, `hsla(${n.hue},65%,30%,0)`);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.x + ox, n.y + oy, n.r, 0, Math.PI * 2); ctx.fill();
+  });
+  stars.forEach(s => {
+    const twk = Math.sin(t * s.spd * 8 + s.ph) * .28 + .72;
+    const ox = dx * s.px, oy = dy * (s.px * .5 + .2);
+    ctx.beginPath(); ctx.arc(s.x + ox, s.y + oy, s.r * twk, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(215,205,255,${s.op * twk})`; ctx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+
+document.addEventListener('mousemove', e => { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; });
+window.addEventListener('resize', () => { resize(); initStars(); });
+resize(); initStars(); drawBg();
+
+// ═══════════════════════════════════════════════════════════════════════
+// CAPAS — busca automática via MusicBrainz + Cover Art Archive
+// ═══════════════════════════════════════════════════════════════════════
+const coverCache = {};
+async function fetchCover(title, artist, idx) {
+  if (coverCache[idx] !== undefined) return coverCache[idx];
+  coverCache[idx] = null;
+  try {
+    const q = encodeURIComponent(`release:"${title}" AND artist:"${artist}"`);
+    const r = await fetch(`https://musicbrainz.org/ws/2/release/?query=${q}&limit=5&fmt=json`, {
+      headers: { 'User-Agent': 'BacklogMusical/1.0 (personal-project)' }
+    });
+    const d = await r.json();
+    for (const rel of (d.releases || [])) {
+      try {
+        const cr = await fetch(`https://coverartarchive.org/release/${rel.id}/front-250`);
+        if (cr.ok) { coverCache[idx] = cr.url; return cr.url; }
+      } catch (e) {}
+    }
+  } catch (e) {}
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// CARROSSEL
+// ═══════════════════════════════════════════════════════════════════════
+let cur = 0;
+
+function buildCarousel() {
+  const track = document.getElementById('csTrack');
+  track.innerHTML = '';
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+
+  ALBUMS.forEach((a, i) => {
+    // card
+    const card = document.createElement('div');
+    card.className = 'cs-card loading';
+    card.dataset.i = i;
+    card.innerHTML = `
+      <div class="face">
+        <img src="" alt="${a.title}" style="opacity:0">
+        <div class="cover-placeholder">buscando capa…</div>
+        <div class="spinner"></div>
+        <div class="info">
+          <h2>${a.title}</h2>
+          <div class="artist">${a.artist}${a.year ? ' · ' + a.year : ''}</div>
+          <span class="gtag">${a.genre}</span>
+        </div>
+      </div>`;
+    card.addEventListener('click', () => { if (parseInt(card.dataset.i) !== cur) goTo(parseInt(card.dataset.i)); });
+    track.appendChild(card);
+
+    // dot
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    dotsEl.appendChild(dot);
+
+    // busca capa de forma assíncrona
+    fetchCover(a.title, a.artist, i).then(url => {
+      const img = card.querySelector('img');
+      const ph = card.querySelector('.cover-placeholder');
+      const sp = card.querySelector('.spinner');
+      sp.style.display = 'none';
+      card.classList.remove('loading');
+      if (url) {
+        img.src = url;
+        img.onload = () => { img.style.opacity = 1; ph.style.display = 'none'; };
+        img.onerror = () => { ph.textContent = 'sem capa'; };
+      } else {
+        ph.textContent = 'sem capa disponível';
+      }
+    });
+  });
+
+  updateCarousel();
+}
+
+function updateCarousel() {
+  const cards = [...document.querySelectorAll('.cs-card')];
+  const CW = 260, GAP = 24;
+
+  cards.forEach((c, i) => {
+    const pos = i - cur;
+    c.removeAttribute('data-pos');
+    c.removeAttribute('data-far');
+    if (Math.abs(pos) <= 3) c.setAttribute('data-pos', pos);
+    else c.setAttribute('data-far', '');
+  });
+
+  const offset = cur * (CW + GAP) + CW / 2;
+  document.getElementById('csTrack').style.marginLeft = `-${offset}px`;
+
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  document.getElementById('ctr').textContent = `${cur + 1} / ${ALBUMS.length}`;
+  document.getElementById('nptxt').textContent = ALBUMS[cur].title + ' — ' + ALBUMS[cur].artist;
+  updateReview();
+}
+
+function updateReview() {
+  const a = ALBUMS[cur];
+  const box = document.getElementById('rvBox');
+  box.style.opacity = 0;
+  setTimeout(() => {
+    const st = document.getElementById('rvStars');
+    st.innerHTML = '';
+    if (a.stars > 0) {
+      for (let i = 1; i <= 5; i++) {
+        const s = document.createElement('div');
+        s.className = 'star' + (i > a.stars ? ' e' : '');
+        st.appendChild(s);
+      }
+    }
+    const rt = document.getElementById('rvTxt');
+    rt.className = a.review ? '' : 'ph';
+    rt.textContent = a.review || 'ainda não ouvi — resenha em breve.';
+    box.style.opacity = 1;
+  }, 220);
+}
+
+function move(dir) { cur = (cur + dir + ALBUMS.length) % ALBUMS.length; updateCarousel(); }
+function goTo(i) { cur = i; updateCarousel(); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') move(-1);
+  if (e.key === 'ArrowRight') move(1);
+});
+let ts = null;
+document.addEventListener('touchstart', e => { ts = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (ts === null) return;
+  if (Math.abs(ts - e.changedTouches[0].clientX) > 45) move(ts > e.changedTouches[0].clientX ? 1 : -1);
+  ts = null;
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// MÚSICAS AVULSAS
+// ═══════════════════════════════════════════════════════════════════════
+function buildTracks() {
+  const wrap = document.getElementById('tracksWrap');
+  wrap.innerHTML = '';
+  TRACKS.forEach(t => {
+    const c = document.createElement('div');
+    c.className = 'tr-card';
+    c.innerHTML = `
+      <div class="tr-num">${t.num}</div>
+      <div class="tr-body">
+        <h3>${t.title}</h3>
+        <div class="ta">${t.artist}</div>
+        <div><span class="gtag">${t.genre}</span></div>
+        <p class="rev">${t.review || 'resenha em breve.'}</p>
+      </div>`;
+    wrap.appendChild(c);
+  });
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.querySelector(`nav button[onclick="showPage('${p}')"]`).classList.add('active');
+}
+
+buildCarousel();
+buildTracks();
+</script>
+</body>
+</html>
