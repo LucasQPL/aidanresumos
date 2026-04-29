@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -103,134 +104,132 @@ nav button.active,nav button:hover{background:rgba(120,70,220,.17);border-color:
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// ÁLBUNS — edite stars (0-5) e review quando ouvir cada um
+// DADOS — edite stars (0-5) e review quando ouvir cada um
+// Para trocar uma capa: cole a URL da imagem no campo "cover"
 // ═══════════════════════════════════════════════════════════════
 const ALBUMS = [
   {
-    title:"A Máquina Que Sonha Colorido",
-    artist:"Sugar Kane", year:2009, genre:"Rock Alternativo",
-    cover:"https://i.scdn.co/image/ab67616d0000b273e7a3d7a5b2c7a0e09e4f2e2a",
-    stars:0, review:""
+    title: "A Máquina Que Sonha Colorido",
+    artist: "Sugar Kane", year: 2009, genre: "Rock Alternativo",
+    cover: "", // buscará via iTunes automaticamente
+    stars: 0, review: ""
   },
   {
-    title:"Amyl and the Sniffers",
-    artist:"Amyl and the Sniffers", year:2019, genre:"Punk Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/9/9e/Amyl_and_the_Sniffers_-_Amyl_and_the_Sniffers.png",
-    stars:0, review:""
+    title: "Amyl and the Sniffers",
+    artist: "Amyl and the Sniffers", year: 2019, genre: "Punk Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/9/9e/Amyl_and_the_Sniffers_-_Amyl_and_the_Sniffers.png",
+    stars: 0, review: ""
   },
   {
-    title:"Déjà vu",
-    artist:"Crosby, Stills, Nash & Young", year:1970, genre:"Folk Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/b/b4/CSNY-deja-vu.jpg",
-    stars:0, review:""
+    title: "Déjà vu",
+    artist: "Crosby, Stills, Nash & Young", year: 1970, genre: "Folk Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/b/b4/CSNY-deja-vu.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Electra Heart",
-    artist:"Marina and the Diamonds", year:2012, genre:"Synth-pop",
-    cover:"https://upload.wikimedia.org/wikipedia/en/4/42/Marina_and_the_Diamonds_-_Electra_Heart.png",
-    stars:0, review:""
+    title: "Electra Heart",
+    artist: "Marina and the Diamonds", year: 2012, genre: "Synth-pop",
+    cover: "https://upload.wikimedia.org/wikipedia/en/4/42/Marina_and_the_Diamonds_-_Electra_Heart.png",
+    stars: 0, review: ""
   },
   {
-    title:"Epicus Doomicus Metallicus",
-    artist:"Candlemass", year:1986, genre:"Doom Metal",
-    cover:"https://upload.wikimedia.org/wikipedia/en/8/87/Candlemass_-_Epicus_Doomicus_Metallicus.jpg",
-    stars:0, review:""
+    title: "Epicus Doomicus Metallicus",
+    artist: "Candlemass", year: 1986, genre: "Doom Metal",
+    cover: "https://upload.wikimedia.org/wikipedia/en/8/87/Candlemass_-_Epicus_Doomicus_Metallicus.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Eternity",
-    artist:"Blaze Bayley", year:1996, genre:"Heavy Metal",
-    cover:"https://upload.wikimedia.org/wikipedia/en/5/54/BlazeBayleyEternity.jpg",
-    stars:0, review:""
+    title: "Eternity",
+    artist: "Anathema", year: 1996, genre: "Gothic / Doom Metal",
+    cover: "https://upload.wikimedia.org/wikipedia/en/4/4e/AnathemaEternity.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Excerpts From a Future Past",
-    artist:"Matmos", year:2004, genre:"Electronic / Experimental",
-    cover:"https://upload.wikimedia.org/wikipedia/en/9/92/Matmos_-_Excerpts_from_a_Future_Past.jpg",
-    stars:0, review:""
+    title: "Excerpts From a Future Past",
+    artist: "Matmos", year: 2004, genre: "Electronic / Experimental",
+    cover: "https://upload.wikimedia.org/wikipedia/en/9/92/Matmos_-_Excerpts_from_a_Future_Past.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Ginete",
-    artist:"Raimundos", year:1994, genre:"Punk Rock Brasileiro",
-    cover:"https://upload.wikimedia.org/wikipedia/pt/7/70/Raimundos_-_Ginete.jpg",
-    stars:0, review:""
+    title: "Ginete",
+    artist: "Marcelo Oliveira", year: 2013, genre: "Música Gaúcha",
+    cover: "", // obscuro, buscará via iTunes
+    stars: 0, review: ""
   },
   {
-    title:"In-A-Gadda-Da-Vida",
-    artist:"Iron Butterfly", year:1968, genre:"Psychedelic Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/f/fd/In-A-Gadda-Da-Vida.jpg",
-    stars:0, review:""
+    title: "In-A-Gadda-Da-Vida",
+    artist: "Iron Butterfly", year: 1968, genre: "Psychedelic Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/f/fd/In-A-Gadda-Da-Vida.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Joelho De Porco",
-    artist:"Joelho De Porco", year:1972, genre:"Rock Progressivo",
-    cover:"https://upload.wikimedia.org/wikipedia/pt/b/b3/Joelho_de_Porco.jpg",
-    stars:0, review:""
+    title: "Joelho De Porco",
+    artist: "Joelho De Porco", year: 1972, genre: "Rock Progressivo",
+    cover: "https://upload.wikimedia.org/wikipedia/pt/b/b3/Joelho_de_Porco.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Live Bullet",
-    artist:"Bob Seger", year:1976, genre:"Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/0/07/LiveBulletBobSeger.jpg",
-    stars:0, review:""
+    title: "Live Bullet",
+    artist: "Bob Seger", year: 1976, genre: "Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/0/07/LiveBulletBobSeger.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"New Hope For The Wretched",
-    artist:"The Plasmatics", year:1980, genre:"Punk / Metal",
-    cover:"https://upload.wikimedia.org/wikipedia/en/3/31/Plasmatics-NewHopeForTheWretched.jpg",
-    stars:0, review:""
+    title: "New Hope For The Wretched",
+    artist: "The Plasmatics", year: 1980, genre: "Punk / Metal",
+    cover: "https://upload.wikimedia.org/wikipedia/en/3/31/Plasmatics-NewHopeForTheWretched.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Neysluvara",
-    artist:"Heilung", year:2019, genre:"Nordic Folk",
-    cover:"https://upload.wikimedia.org/wikipedia/en/0/06/Heilung_Neysluvara.jpg",
-    stars:0, review:""
+    title: "Neysluvara",
+    artist: "Hatari", year: 2017, genre: "Industrial / EBM",
+    cover: "https://upload.wikimedia.org/wikipedia/en/0/06/Neysluvara_EP_Hatari.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Por Este Rio Acima",
-    artist:"Sérgio Godinho", year:1975, genre:"Folk Português",
-    cover:"https://upload.wikimedia.org/wikipedia/pt/b/bf/Por_Este_Rio_Acima.jpg",
-    stars:0, review:""
+    title: "Por Este Rio Acima",
+    artist: "Fausto", year: 1982, genre: "Folk Progressivo Português",
+    cover: "https://upload.wikimedia.org/wikipedia/pt/4/44/Por_Este_Rio_Acima.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Runaljod – Yggdrasil",
-    artist:"Wardruna", year:2013, genre:"Nordic Folk",
-    cover:"https://upload.wikimedia.org/wikipedia/en/5/5f/Wardruna_-_Runaljod_Yggdrasil.jpg",
-    stars:0, review:""
+    title: "Runaljod – Yggdrasil",
+    artist: "Wardruna", year: 2013, genre: "Nordic Folk",
+    cover: "https://upload.wikimedia.org/wikipedia/en/5/5f/Wardruna_-_Runaljod_Yggdrasil.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Shakin' All Over",
-    artist:"Johnny Kidd & The Pirates", year:1960, genre:"Rock & Roll",
-    cover:"https://upload.wikimedia.org/wikipedia/en/e/e1/Shakin%27_All_Over_Johnny_Kidd.jpg",
-    stars:0, review:""
+    title: "Shakin' All Over",
+    artist: "Johnny Kidd & The Pirates", year: 1960, genre: "Rock & Roll",
+    cover: "https://upload.wikimedia.org/wikipedia/en/e/e1/Shakin%27_All_Over_Johnny_Kidd.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"The Joker",
-    artist:"Steve Miller Band", year:1973, genre:"Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/c/c9/The_Joker_%28album%29.jpg",
-    stars:0, review:""
+    title: "The Joker",
+    artist: "Steve Miller Band", year: 1973, genre: "Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/c/c9/The_Joker_%28album%29.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Welcome to My Nightmare",
-    artist:"Alice Cooper", year:1975, genre:"Shock Rock",
-    cover:"https://upload.wikimedia.org/wikipedia/en/2/2c/Alice_Cooper_Welcome_to_My_Nightmare.jpg",
-    stars:0, review:""
+    title: "Welcome to My Nightmare",
+    artist: "Alice Cooper", year: 1975, genre: "Shock Rock",
+    cover: "https://upload.wikimedia.org/wikipedia/en/2/2c/Alice_Cooper_Welcome_to_My_Nightmare.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Psalm 69",
-    artist:"Ministry", year:1992, genre:"Industrial Metal",
-    cover:"https://upload.wikimedia.org/wikipedia/en/a/a6/Ministry_psalm69.jpg",
-    stars:0, review:""
+    title: "Psalm 69",
+    artist: "Ministry", year: 1992, genre: "Industrial Metal",
+    cover: "https://upload.wikimedia.org/wikipedia/en/a/a6/Ministry_psalm69.jpg",
+    stars: 0, review: ""
   },
   {
-    title:"Creatures",
-    artist:"Fungus Hill", year:2023, genre:"Punk / Garage",
-    cover:"",
-    stars:0, review:""
+    title: "Creatures",
+    artist: "Fungus Hill", year: 2023, genre: "Punk / Garage",
+    cover: "https://f4.bcbits.com/img/a0494617694_16.jpg",
+    stars: 0, review: ""
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════
-// MÚSICAS — substitua pelos nomes reais quando souber
-// ═══════════════════════════════════════════════════════════════
 const TRACKS = [
   { num:"01", title:"[música 1]", artist:"[artista]", genre:"—", review:"" },
   { num:"02", title:"[música 2]", artist:"[artista]", genre:"—", review:"" },
@@ -240,7 +239,7 @@ const TRACKS = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// GALÁXIA — fundo com parallax no mouse
+// GALÁXIA com parallax no mouse
 // ═══════════════════════════════════════════════════════════════
 const cv=document.getElementById('bg'),cx=cv.getContext('2d');
 let W,H,stars=[],nebs=[],mx=.5,my=.5,tx=.5,ty=.5;
@@ -275,37 +274,39 @@ window.addEventListener('resize',()=>{resize();mkStars()});
 resize();mkStars();draw();
 
 // ═══════════════════════════════════════════════════════════════
-// CARROSSEL
+// CAPAS — tenta URL hardcoded, fallback via iTunes API
 // ═══════════════════════════════════════════════════════════════
-let cur=0;
-const CW=250,GM=14;
-
-// fallback: tenta iTunes se a imagem Wikimedia falhar
-async function tryItunes(title,artist){
+async function tryItunes(title, artist){
   try{
     const q=encodeURIComponent(`${title} ${artist}`);
     const r=await fetch(`https://itunes.apple.com/search?term=${q}&entity=album&limit=5&media=music`);
     const d=await r.json();
     const res=d.results||[];
     if(res.length){
-      const m=res.find(x=>(x.collectionName||'').toLowerCase().includes(title.toLowerCase().slice(0,6)))||res[0];
+      const m=res.find(x=>(x.collectionName||'').toLowerCase().includes(title.toLowerCase().slice(0,5)))||res[0];
       return (m.artworkUrl100||'').replace('100x100bb','600x600bb');
     }
   }catch(e){}
   return '';
 }
 
+// ═══════════════════════════════════════════════════════════════
+// CARROSSEL
+// ═══════════════════════════════════════════════════════════════
+let cur=0;
+const CW=250, GM=14;
+
 function buildCarousel(){
   const track=document.getElementById('csT');
   const dotsEl=document.getElementById('dots');
-  track.innerHTML='';dotsEl.innerHTML='';
+  track.innerHTML=''; dotsEl.innerHTML='';
 
   ALBUMS.forEach((a,i)=>{
     const card=document.createElement('div');
-    card.className='cs-card';card.dataset.i=i;
+    card.className='cs-card'; card.dataset.i=i;
     card.innerHTML=`
       <div class="face">
-        <div class="cph" id="ph${i}">sem capa</div>
+        <div class="cph" id="ph${i}">carregando…</div>
         <img id="img${i}" src="" alt="${a.title}" style="opacity:0">
         <div class="info">
           <h2>${a.title}</h2>
@@ -321,20 +322,21 @@ function buildCarousel(){
     dot.onclick=()=>goTo(i);
     dotsEl.appendChild(dot);
 
-    // Carrega imagem: primeiro tenta a URL hardcoded, depois iTunes como fallback
-    const loadImg=(src)=>{
-      if(!src){tryItunes(a.title,a.artist).then(u=>u&&loadImg(u));return}
+    function applyImg(src){
       const el=document.getElementById('img'+i);
       const ph=document.getElementById('ph'+i);
+      if(!src){ph.textContent='sem capa';return}
       el.onload=()=>{el.style.opacity=1;ph.style.display='none'};
       el.onerror=()=>{
         if(el.dataset.tried){ph.textContent='sem capa';return}
         el.dataset.tried='1';
-        tryItunes(a.title,a.artist).then(u=>{if(u)loadImg(u)});
+        tryItunes(a.title,a.artist).then(u=>{if(u)applyImg(u);else ph.textContent='sem capa'});
       };
       el.src=src;
-    };
-    loadImg(a.cover);
+    }
+
+    if(a.cover) applyImg(a.cover);
+    else tryItunes(a.title,a.artist).then(u=>applyImg(u));
   });
   updateCarousel();
 }
@@ -342,7 +344,7 @@ function buildCarousel(){
 function updateCarousel(){
   [...document.querySelectorAll('.cs-card')].forEach((c,i)=>{
     const p=i-cur;
-    c.removeAttribute('data-p');c.removeAttribute('data-far');
+    c.removeAttribute('data-p'); c.removeAttribute('data-far');
     Math.abs(p)<=3?c.setAttribute('data-p',p):c.setAttribute('data-far','');
   });
   document.getElementById('csT').style.marginLeft=`-${cur*(CW+GM*2)+CW/2}px`;
@@ -357,8 +359,8 @@ function updateReview(){
   const box=document.getElementById('rvBox');
   box.style.opacity=0;
   setTimeout(()=>{
-    const st=document.getElementById('rvSt');st.innerHTML='';
-    if(a.stars>0)for(let i=1;i<=5;i++){const s=document.createElement('div');s.className='star'+(i>a.stars?' e':'');st.appendChild(s)}
+    const st=document.getElementById('rvSt'); st.innerHTML='';
+    if(a.stars>0) for(let i=1;i<=5;i++){const s=document.createElement('div');s.className='star'+(i>a.stars?' e':'');st.appendChild(s)}
     const rt=document.getElementById('rvTx');
     rt.className=a.review?'':'ph';
     rt.textContent=a.review||'ainda não ouvi — resenha em breve.';
@@ -385,9 +387,9 @@ document.addEventListener('touchend',e=>{
 // MÚSICAS AVULSAS
 // ═══════════════════════════════════════════════════════════════
 function buildTracks(){
-  const wrap=document.getElementById('trW');wrap.innerHTML='';
+  const wrap=document.getElementById('trW'); wrap.innerHTML='';
   TRACKS.forEach(t=>{
-    const c=document.createElement('div');c.className='tr-card';
+    const c=document.createElement('div'); c.className='tr-card';
     c.innerHTML=`
       <div class="tr-num">${t.num}</div>
       <div class="tr-body">
